@@ -3,7 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import SpotifyWebApi from 'spotify-web-api-js';
 import { Jumbotron, Button } from 'reactstrap';
-import * as d3 from "d3";
+// import * as d3 from "d3";
 
 const spotifyApi = new SpotifyWebApi({clientId : 'cc4b59d921b646e2a2a55fe4c409e8ab', clientSecret : '0568ba6224d846acaa1969dd646f25f1'});
 
@@ -13,6 +13,8 @@ class App extends Component {
   const params = this.getHashParams();
   const token = params.access_token;
   this.nextSongo = this.nextSongo.bind(this);
+  this.getNowPlaying = this.getNowPlaying.bind(this);
+  // this.maybe = this.maybe.bind(this);
   console.log(params)
 
   if (token) {
@@ -20,8 +22,10 @@ class App extends Component {
   }
   this.state = {
     loggedIn: token ? true : false,
-    nowPlaying: { name: '', albumArt: '' }
+    nowPlaying: { name: '', albumArt: '', songId: ''},
+    attributes: {energy: '', loudness: '', majmin: '', tempo : '', happiness : ''}
   }
+ 
 }
 
   getHashParams() {
@@ -36,15 +40,38 @@ class App extends Component {
     return hashParams;
   }
 
-  async getNowPlaying(){
-    const response = await spotifyApi.getMyCurrentPlaybackState();
-    this.setState({
-      nowPlaying: {
-        name: response.item.name,
-        albumArt: response.item.album.images[0].url
-        }
-      }); 
+  getNowPlaying(){
+    spotifyApi.getMyCurrentPlaybackState()
+      .then((response) => {
+        this.setState({
+          nowPlaying: {
+              name: response.item.name,
+              albumArt: response.item.album.images[0].url,
+              songId : response.item.id
+            }
+        }, this.getAudioFeatures(this.state.nowPlaying.songId));
+      })
   }
+
+  getAudioFeatures(song) {
+    spotifyApi.getAudioFeaturesForTrack(song)
+      .then((response) => {
+        this.setState({
+          attributes: {
+              energy: response.energy,
+              loudness: response.loudness,
+              majmin: response.mode,
+              tempo: response.tempo,
+              happiness: response.valence
+          }
+        });
+      })
+  }
+
+  // maybe() {
+  //   this.getNowPlaying()
+  //     .then(() => this.getAudioFeatures(this.state.nowPlaying.songId));
+  // }
 
   printToken(){
     console.log(this.token)
@@ -70,6 +97,8 @@ class App extends Component {
         this.getNowPlaying()
       ));
   }
+
+  
 
   render() {
     this.getNowPlaying()
