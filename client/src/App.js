@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import SpotifyWebApi from 'spotify-web-api-js';
 import { Jumbotron, Button } from 'reactstrap';
+import * as d3 from "d3";
 
 const spotifyApi = new SpotifyWebApi({clientId : 'cc4b59d921b646e2a2a55fe4c409e8ab', clientSecret : '0568ba6224d846acaa1969dd646f25f1'});
 
@@ -35,17 +36,14 @@ class App extends Component {
     return hashParams;
   }
 
-  getNowPlaying(){
-    spotifyApi.getMyCurrentPlaybackState()
-      .then((response) => {
-        console.log(response.item.name);
-        this.setState({
-          nowPlaying: {
-              name: response.item.name,
-              albumArt: response.item.album.images[0].url
-            }
-        });
-      })
+  async getNowPlaying(){
+    const response = await spotifyApi.getMyCurrentPlaybackState();
+    this.setState({
+      nowPlaying: {
+        name: response.item.name,
+        albumArt: response.item.album.images[0].url
+        }
+      }); 
   }
 
   printToken(){
@@ -74,6 +72,7 @@ class App extends Component {
   }
 
   render() {
+    this.getNowPlaying()
     return (
       <div className="App">
       <Jumbotron>
@@ -100,7 +99,7 @@ class App extends Component {
     }
     { this.state.loggedIn &&
       <Button outline color="primary" onClick={() => {this.pauseSongo(); this.getNowPlaying();}}>
-        Pause
+        ❚❚
       </Button>
     }{ this.state.loggedIn &&
       <Button outline color="primary" onClick={() => {this.nextSongo(); this.getNowPlaying();}}>
@@ -116,10 +115,6 @@ class App extends Component {
 
   </p>
   </Jumbotron>
-
-
-
-
     </div>
   );
 }
