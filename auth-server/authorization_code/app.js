@@ -17,7 +17,7 @@ var client_id = 'cc4b59d921b646e2a2a55fe4c409e8ab'; // Your client id
 var client_secret = '0568ba6224d846acaa1969dd646f25f1'; // Your secret
 var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
 
-hfkdsk
+
 /**
  * Generates a random string containing numbers and letters
  * @param  {number} length The length of the string
