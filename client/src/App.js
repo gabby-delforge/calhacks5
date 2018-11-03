@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import SpotifyWebApi from 'spotify-web-api-js';
+import { Jumbotron, Button } from 'reactstrap';
+
 const spotifyApi = new SpotifyWebApi({clientId : 'cc4b59d921b646e2a2a55fe4c409e8ab', clientSecret : '0568ba6224d846acaa1969dd646f25f1'});
 
 class App extends Component {
@@ -9,6 +11,7 @@ class App extends Component {
     super();
   const params = this.getHashParams();
   const token = params.access_token;
+  this.nextSongo = this.nextSongo.bind(this);
   console.log(params)
 
   if (token) {
@@ -16,7 +19,7 @@ class App extends Component {
   }
   this.state = {
     loggedIn: token ? true : false,
-    nowPlaying: { name: 'Not Checked', albumArt: '' }
+    nowPlaying: { name: '', albumArt: '' }
   }
 }
 
@@ -35,9 +38,10 @@ class App extends Component {
   getNowPlaying(){
     spotifyApi.getMyCurrentPlaybackState()
       .then((response) => {
+        console.log(response.item.name);
         this.setState({
-          nowPlaying: { 
-              name: response.item.name, 
+          nowPlaying: {
+              name: response.item.name,
               albumArt: response.item.album.images[0].url
             }
         });
@@ -49,30 +53,48 @@ class App extends Component {
   }
 
   nextSongo(){
-      spotifyApi.skipToNext()
+    spotifyApi.skipToNext()
+      .then((response) => (
+        this.getNowPlaying()
+      ));
   }
 
   render() {
-  return (
-    <div className="App">
-      <a href='http://localhost:8888' > Login to Spotify </a>
-      <div>
-        Now Playing: { this.state.nowPlaying.name }
-      </div>
-      <div>
-        <img src={this.state.nowPlaying.albumArt} style={{ height: 150 }}/>
-      </div>
+    return (
+      <div className="App">
+      <Jumbotron>
+    <h1 className="display-3">
+    {!this.state.loggedIn && <a href='http://localhost:8888' > Login to Spotify </a>}
+    {this.state.loggedIn && <h1> WELCOME! </h1>}
 
-      { this.state.loggedIn &&
-        <button onClick={() => this.getNowPlaying()}>
-          Check Now Playing
-        </button>
-      }
-      { this.state.loggedIn &&
-        <button onClick={this.nextSongo}>
-          Next Song
-        </button>
-      }
+    </h1>
+    <p className="lead">Listen to music with your friends.</p>
+    <hr className="my-2" />
+    <p>      <div>
+            <img src={this.state.nowPlaying.albumArt} style={{ height: 150 }}/>
+          </div>
+
+          <div>
+            Now Playing: { this.state.nowPlaying.name }
+          </div>
+          </p>
+    <p className="lead">
+    { this.state.loggedIn &&
+      <Button outline color="primary" onClick={() => this.getNowPlaying()}>
+        Now Playing
+      </Button>
+    }
+    { this.state.loggedIn &&
+      <Button outline color="primary" onClick={() => {this.nextSongo(); this.getNowPlaying();}}>
+        Next Song
+      </Button>
+    }
+
+  </p>
+  </Jumbotron>
+
+
+
 
     </div>
   );
