@@ -59,6 +59,20 @@ class App extends Component {
       ));
   }
 
+  pauseSongo(){
+    spotifyApi.pause()
+      .then((response) => (
+        this.getNowPlaying()
+      ));
+  }
+
+  prevSongo(){
+    spotifyApi.skipToPrevious()
+      .then((response) => (
+        this.getNowPlaying()
+      ));
+  }
+
   render() {
     return (
       <div className="App">
@@ -79,14 +93,24 @@ class App extends Component {
           </div>
           </p>
     <p className="lead">
-    { this.state.loggedIn &&
-      <Button outline color="primary" onClick={() => this.getNowPlaying()}>
-        Now Playing
+    <div> { this.state.loggedIn &&
+      <Button outline color="primary" onClick={() => {this.nextSongo(); this.getNowPlaying();}}>
+        Previous Song
       </Button>
     }
     { this.state.loggedIn &&
+      <Button outline color="primary" onClick={() => {this.pauseSongo(); this.getNowPlaying();}}>
+        Pause
+      </Button>
+    }{ this.state.loggedIn &&
       <Button outline color="primary" onClick={() => {this.nextSongo(); this.getNowPlaying();}}>
         Next Song
+      </Button>
+    }</div>
+   
+    { this.state.loggedIn &&
+      <Button outline color="primary" onClick={() => this.getNowPlaying()}>
+        Now Playing
       </Button>
     }
 
