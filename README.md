@@ -1,6 +1,8 @@
-# Cal Hacks 5.0 Project
+# Cal Hacks 5.0 Project: MoodBox
 
+![MoodBox](https://he-s3.s3.amazonaws.com/media/sprint/cal-hacks-50/team/477028/ae415cfmoodbox1.png)
 We created a sentiment analyzer using the spotify api.  It scrapes metadata about a given song and then visualizes the song using d3.
+[See the video demo here.](https://www.youtube.com/watch?v=663GIgxFDIc&feature=youtu.be)
 ## Getting Started
 
 To run this project clone the repo and run npm install in the client folder.
