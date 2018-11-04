@@ -21,6 +21,7 @@ class App extends Component {
   this.state = {
     width : 0,
     height : 0,
+    isPlaying: false,
     loggedIn: token ? true : false,
     nowPlaying: { name: '', albumArt: '', songId: ''},
     attributes: {energy: '', loudness: '', majmin: '', tempo : '', happiness : ''}
@@ -90,8 +91,16 @@ class App extends Component {
 
   pauseSongo(){
     spotifyApi.pause()
+    this.setState({
+      isPlaying: false
+    })
   }
-
+  playSongo(){
+    spotifyApi.play()
+    this.setState({
+      isPlaying: true
+    }, console.log(this.state))
+  }
   prevSongo(){
     spotifyApi.skipToPrevious()
     setTimeout(() => this.getNowPlaying(), 1000)
@@ -104,10 +113,35 @@ class App extends Component {
       <Jumbotron>
     <h1 >
     {!this.state.loggedIn && <a href='http://localhost:8888' > Login to Spotify </a>}
-    {this.state.loggedIn && <h1> WELCOME! </h1>}
+    {this.state.loggedIn && <h1> MoodBox </h1>}
 
     </h1>
     <p className="lead">See what you hear.</p>
+    <div> { this.state.loggedIn &&
+      <Button outline color="primary" onClick={() => {this.nextSongo(); this.getNowPlaying();}}>
+        Previous Song
+      </Button>
+    }
+
+    { this.state.loggedIn && this.state.isPlaying &&
+      <Button outline color="primary" onClick={() => {this.pauseSongo(); this.getNowPlaying();}}>
+        ❚❚
+      </Button>
+    }
+    { this.state.loggedIn && !this.state.isPlaying &&
+      <Button outline color="primary" onClick={() => {this.playSongo(); this.getNowPlaying();}}>
+        ►
+      </Button>
+    }
+
+    { this.state.loggedIn &&
+      <Button outline color="primary" onClick={() => {this.nextSongo(); this.getNowPlaying();}}>
+        Next Song
+      </Button>
+    }</div>
+
+
+
     <hr className="my-2" />
     {this.state.loggedIn && <Streamgraph
       width = {this.state.width * .7}
@@ -116,35 +150,18 @@ class App extends Component {
       happy = {this.state.attributes.happiness > 0.5 ? 1 : 0}
     />}
     <br/>
-    <p>      <div>
-            <img src={this.state.nowPlaying.albumArt} style={{ height: 150 }}/>
-          </div>
+    <p>
 
-          {this.state.loggedIn &&<div>
+          {this.state.loggedIn && this.state.nowPlaying.name && <div>
             Now Playing: { this.state.nowPlaying.name }
           </div>}
+          { this.state.loggedIn &&
+            <Button outline color="primary" onClick={() => this.getNowPlaying()}>
+              Now Playing
+            </Button>
+          }
           </p>
     <p className="lead">
-    <div> { this.state.loggedIn &&
-      <Button outline color="primary" onClick={() => {this.nextSongo(); this.getNowPlaying();}}>
-        Previous Song
-      </Button>
-    }
-    { this.state.loggedIn &&
-      <Button outline color="primary" onClick={() => {this.pauseSongo(); this.getNowPlaying();}}>
-        ❚❚
-      </Button>
-    }{ this.state.loggedIn &&
-      <Button outline color="primary" onClick={() => {this.nextSongo(); this.getNowPlaying();}}>
-        Next Song
-      </Button>
-    }</div>
-
-    { this.state.loggedIn &&
-      <Button outline color="primary" onClick={() => this.getNowPlaying()}>
-        Now Playing
-      </Button>
-    }
 
   </p>
   </Jumbotron>
