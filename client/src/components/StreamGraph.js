@@ -54,7 +54,132 @@ const cool = {
   sad: ['#D8CBBC', '#B9CCB9', '#9CBAA2', '#638D96', '#444C7F', '#595758']
 };
 
+function hexToRgb(hex) {
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+  } : null;
+}
+
+function rgbToHsl(r, g, b){
+  r /= 255;
+  g /= 255;
+  b /= 255;
+  var max = Math.max(r, g, b), min = Math.min(r, g, b);
+  var h, s, l = (max + min) / 2;
+
+  if(max == min){
+      h = s = 0; // achromatic
+  }else{
+      var d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      switch(max){
+          case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+          case g: h = (b - r) / d + 2; break;
+          case b: h = (r - g) / d + 4; break;
+      }
+      h /= 6;
+  }
+
+  return [360*h, 100*s, 100*l];
+}
+
+function rgbToHex(r, g, b) {
+  return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).slice(0,6);
+}
+
+function hslToRgb(h, s, l){
+  h = h/360;
+  s = s/100;
+  l = l/100;
+  var r, g, b;
+
+  if(s == 0){
+      r = g = b = l; // achromatic
+  }else{
+      function hue2rgb(p, q, t){
+          if(t < 0) t += 1;
+          if(t > 1) t -= 1;
+          if(t < 1/6) return p + (q - p) * 6 * t;
+          if(t < 1/2) return q;
+          if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+          return p;
+      }
+
+      var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+      var p = 2 * l - q;
+      r = hue2rgb(p, q, h + 1/3);
+      g = hue2rgb(p, q, h);
+      b = hue2rgb(p, q, h - 1/3);
+  }
+
+  return [r * 255, g * 255, b * 255];
+}
+
+const epsilon = [45, 10, 0]
+const s = {
+  major: {
+    happy: [40, 82, 50],
+    sad: [331, 50, 50]
+  },
+  minor: {
+    happy: [86, 60, 50],
+    sad: [233, 50, 50]
+  }
+}
+
+const generateNewColor = (h,s,l) => {
+  h = (Math.random() > 0.5 ? (h + Math.random()*epsilon[0]) : (h - Math.random()*epsilon[0])) % 360;
+  s = (Math.random() > 0.5 ? (s + Math.random()*epsilon[1]) : (s - Math.random()*epsilon[1])) % 100;
+  l = (Math.random() > 0.5 ? (l + Math.random()*epsilon[2]) : (l - Math.random()*epsilon[2])) % 100;
+  const rgb = hslToRgb(h,s,l);
+  return rgbToHex(rgb[0], rgb[1], rgb[2]);
+};
+
+const generateColors = (colors) => {
+  let rv = ["","","","","",""]
+  for (let i = 0; i < colors.length; i++) {
+    const rgb = hexToRgb(colors[i]);
+    const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+    i == 1 && console.log(hsl);
+    rv[i] = generateNewColor(hsl[0], hsl[1], hsl[2]);
+  }
+  console.log("generate", rv);
+  return rv;
+};
+
+const initColors = (arr) => {
+  const h = arr[0];
+  const s = arr[1];
+  const l = arr[2];
+  const rgb = hslToRgb(h,s,l);
+  const hex = rgbToHex(rgb[0],rgb[1],rgb[2]);
+  const rv = [hex, hex, hex, hex, hex, hex];
+  console.log("init", rv);
+  return rv
+}
+
 class Streamgraph extends React.Component {
+  constructor(props) {
+    console.log("Constructing");
+    super(props);
+    this.state = {
+      colors: generateColors(initColors(
+        props.majorMinor ?
+       (props.happy ? s.major.happy : s.major.sad) 
+       :
+       (props.happy ? s.minor.happy : s.minor.sad))) 
+    };
+  }
+
+  updateColors = () => {
+    let colors = generateColors(this.state.colors);
+    this.setState({
+      colors: colors
+    }, () => this.forceUpdate());
+  };
   render() {
     const {
       width,
@@ -84,7 +209,7 @@ class Streamgraph extends React.Component {
     //Fill colors for patterns
     const zScale = scaleOrdinal({
       domain: keys,
-      range: majorMinor ? (happy? warm.happy : warm.sad) : (happy ? cool.happy : cool.sad),
+      range: this.state.colors,
     });
     const patternScale = scaleOrdinal({
       domain: keys,
@@ -135,8 +260,8 @@ class Streamgraph extends React.Component {
           complement
         />
         <g
-          onClick={event => this.forceUpdate()}
-          onTouchStart={event => this.forceUpdate()}
+          onClick={event => this.updateColors()}
+          onTouchStart={event => this.updateColors()}
         >
           <rect
             x={0}
@@ -158,7 +283,7 @@ class Streamgraph extends React.Component {
                 const d = path(series)
                 return (
                   <g key={`series-${series.key}`}>
-                  <Spring to={{ d }}>
+                  <Spring to={{ d }} config={{velocity: 10}}>
                     {tweened => (
                       <React.Fragment>
                         <path d={tweened.d} fill={zScale(series.key)} />
