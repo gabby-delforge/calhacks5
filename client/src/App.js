@@ -24,7 +24,8 @@ class App extends Component {
     width : 0,
     height : 0,
     loggedIn: token ? true : false,
-    nowPlaying: { name: '', albumArt: '' }
+    nowPlaying: { name: '', albumArt: '', songId: ''},
+    attributes: {energy: '', loudness: '', majmin: '', tempo : '', happiness : ''}
   }
 }
 
@@ -40,15 +41,34 @@ class App extends Component {
     return hashParams;
   }
 
-  async getNowPlaying(){
-    const response = await spotifyApi.getMyCurrentPlaybackState();
-    this.setState({
-      nowPlaying: {
-        name: response.item.name,
-        albumArt: response.item.album.images[0].url
-        }
-      });
+  getNowPlaying(){
+    spotifyApi.getMyCurrentPlaybackState()
+      .then((response) => {
+        this.setState({
+          nowPlaying: {
+              name: response.item.name,
+              albumArt: response.item.album.images[0].url,
+              songId : response.item.id
+            }
+        }, this.getAudioFeatures(this.state.nowPlaying.songId));
+      })
   }
+
+  getAudioFeatures(song) {
+    spotifyApi.getAudioFeaturesForTrack(song)
+      .then((response) => {
+        this.setState({
+          attributes: {
+              energy: response.energy,
+              loudness: response.loudness,
+              majmin: response.mode,
+              tempo: response.tempo,
+              happiness: response.valence
+          }
+        });
+      })
+  }
+
   componentDidMount() {
     this.updateWindowDimensions();
     window.addEventListener('resize', this.updateWindowDimensions);
@@ -68,26 +88,21 @@ class App extends Component {
   nextSongo(){
     spotifyApi.skipToNext()
       .then((response) => (
-        this.getNowPlaying()
+        setInterval(() => this.getNowPlaying(), 2000)
       ));
   }
 
   pauseSongo(){
     spotifyApi.pause()
-      .then((response) => (
-        this.getNowPlaying()
-      ));
+
   }
 
   prevSongo(){
     spotifyApi.skipToPrevious()
-      .then((response) => (
-        this.getNowPlaying()
-      ));
   }
 
+
   render() {
-    this.getNowPlaying()
     return (
       <div className="App">
       <Jumbotron>
