@@ -15,8 +15,6 @@ class App extends Component {
   this.nextSongo = this.nextSongo.bind(this);
   this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
 
-  console.log(params)
-
   if (token) {
     spotifyApi.setAccessToken(token);
   }
@@ -27,6 +25,7 @@ class App extends Component {
     nowPlaying: { name: '', albumArt: '', songId: ''},
     attributes: {energy: '', loudness: '', majmin: '', tempo : '', happiness : ''}
   }
+  setInterval(() => this.getNowPlaying(), 2000)
 }
 
   getHashParams() {
@@ -87,9 +86,6 @@ class App extends Component {
 
   nextSongo(){
     spotifyApi.skipToNext()
-      .then((response) => (
-        setInterval(() => this.getNowPlaying(), 2000)
-      ));
   }
 
   pauseSongo(){
