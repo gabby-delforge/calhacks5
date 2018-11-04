@@ -91,7 +91,7 @@ class App extends Component {
 
   nextSongo(){
     spotifyApi.skipToNext()
-    this.setState({nextSong: true, isPlaying: true});
+    this.setState({nextSong: true});
     setTimeout(() => this.getNowPlaying(), 1000)
   }
 
@@ -145,7 +145,7 @@ class App extends Component {
         Next Song
       </Button>
     }</div>
-
+    
     <hr className="my-2" />
 
     {this.state.loggedIn && <Streamgraph
@@ -155,6 +155,7 @@ class App extends Component {
       happy = {this.state.attributes.happiness > 0.5 ? 1 : 0}
       nextSong = {this.state.nextSong}
       setNextSong = {this.setNextSongFalse}
+      tempo = {this.state.attributes.tempo}
     />}
 
     <br/>

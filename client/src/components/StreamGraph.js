@@ -171,12 +171,14 @@ class Streamgraph extends React.Component {
     console.log("Constructing");
     super(props);
     this.state = {
+      tempo : props.tempo,
       colors: generateColors(initColors(
         props.majorMinor ?
        (props.happy ? s.major.happy : s.major.sad) 
        :
        (props.happy ? s.minor.happy : s.minor.sad))) 
     };
+    this.interval = setInterval(() => this.updateColors(), 100000000*1000000/ props.tempo)
   }
 
   updateColors = () => {
@@ -200,6 +202,8 @@ class Streamgraph extends React.Component {
     if (width < 10) return null;
 
     if (this.props.nextSong) {
+      clearInterval(this.interval)
+      this.interval = setInterval(() => this.updateColors(), 1000000000*1000000 / this.props.tempo)
       this.setState({
         colors: generateColors(initColors(
           this.props.majorMinor ?
