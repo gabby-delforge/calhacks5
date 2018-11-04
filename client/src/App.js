@@ -25,7 +25,6 @@ class App extends Component {
     nowPlaying: { name: '', albumArt: '', songId: ''},
     attributes: {energy: '', loudness: '', majmin: '', tempo : '', happiness : ''}
   }
-  setInterval(() => this.getNowPlaying(), 2000)
 }
 
   getHashParams() {
@@ -86,15 +85,16 @@ class App extends Component {
 
   nextSongo(){
     spotifyApi.skipToNext()
+    setTimeout(() => this.getNowPlaying(), 1000)
   }
 
   pauseSongo(){
     spotifyApi.pause()
-
   }
 
   prevSongo(){
     spotifyApi.skipToPrevious()
+    setTimeout(() => this.getNowPlaying(), 1000)
   }
 
 
