@@ -102,7 +102,7 @@ class App extends Component {
     return (
       <div className="App">
       <Jumbotron>
-    <h1 className="display-3">
+    <h1 >
     {!this.state.loggedIn && <a href='http://localhost:8888' > Login to Spotify </a>}
     {this.state.loggedIn && <h1> WELCOME! </h1>}
 

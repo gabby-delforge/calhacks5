@@ -3,6 +3,7 @@ import cx from 'classnames';
 import { Stack } from '@vx/shape';
 import { Group } from '@vx/group';
 import { curveBasis } from '@vx/curve';
+import {Spring} from 'react-spring';
 import { PatternCircles, PatternWaves } from '@vx/pattern';
 import { scaleTime, scaleLinear, scaleOrdinal } from '@vx/scale';
 import { cityTemperature } from '@vx/mock-data';
@@ -135,7 +136,7 @@ class Streamgraph extends React.Component {
         />
         <g
           onClick={event => this.forceUpdate()}
-          //onTouchStart={event => this.forceUpdate()}
+          onTouchStart={event => this.forceUpdate()}
         >
           <rect
             x={0}
@@ -154,12 +155,17 @@ class Streamgraph extends React.Component {
             y1={d => yScale(d[1])}
             render={({ seriesData, path }) => {
               return seriesData.map((series, i) => {
+                const d = path(series)
                 return (
                   <g key={`series-${series.key}`}>
-                    <path d={path(series)} fill={zScale(series.key)} />
-                    <path
-                      d={path(series)}
-                      fill={`url(#${patternScale(series.key)})`}
+                  <Spring to={{ d }}>
+                    {tweened => (
+                      <React.Fragment>
+                        <path d={tweened.d} fill={zScale(series.key)} />
+                        <path d={tweened.d} fill={`url(#${patternScale(series.key)})`} />
+                      </React.Fragment>
+                    )}
+                  </Spring>
                     />
                   </g>
                 );
