@@ -118,7 +118,7 @@ function hslToRgb(h, s, l){
   return [r * 255, g * 255, b * 255];
 }
 
-const epsilon = [45, 10, 0]
+const epsilon = [20, 5, 10]
 const s = {
   major: {
     happy: [40, 82, 50],
@@ -142,7 +142,12 @@ const generateColors = (colors) => {
   let rv = ["","","","","",""]
   for (let i = 0; i < colors.length; i++) {
     const rgb = hexToRgb(colors[i]);
-    const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+    let hsl = [];
+    if (rgb == undefined) {
+      hsl = s.major.happy
+    } else {
+      hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+    }
     i == 1 && console.log(hsl);
     rv[i] = generateNewColor(hsl[0], hsl[1], hsl[2]);
   }
@@ -179,6 +184,7 @@ class Streamgraph extends React.Component {
     this.setState({
       colors: colors
     }, () => this.forceUpdate());
+    console.log(colors);
   };
   render() {
     const {
