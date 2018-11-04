@@ -145,7 +145,7 @@ class App extends Component {
         Next Song
       </Button>
     }</div>
-    
+
     <hr className="my-2" />
 
     {this.state.loggedIn && <Streamgraph
@@ -156,6 +156,7 @@ class App extends Component {
       nextSong = {this.state.nextSong}
       setNextSong = {this.setNextSongFalse}
       tempo = {this.state.attributes.tempo}
+      isplaying = {this.state.isPlaying}
     />}
 
     <br/>
