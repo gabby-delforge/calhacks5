@@ -45,12 +45,12 @@ function bump(a, n) {
 }
 
 const warm = {
-  happy: ['#6E44FF', '#B892FF', '#FFC2E2', '#FF90B3', '#EF7A85', '#394211'],
+  happy: ['#6E44FF', '#B892FF', '#FFC2E2', '#FF90B3', '#EF7A85', '#dbc472'],
   sad: ['#e29595', '#f99f4a', '#772720', '#fcf297', '#94a382', '#ad537e']
 };
 const cool = {
   happy: ['#AC80A0', '#89AAE6', '#3685B5', '#0471A6', '#061826', '#70A9A1'],
-  sad: ['#AC80A0', '#89AAE6', '#3685B5', '#0471A6', '#061826', '#70A9A1']
+  sad: ['#D8CBBC', '#B9CCB9', '#9CBAA2', '#638D96', '#444C7F', '#595758']
 };
 
 class Streamgraph extends React.Component {
