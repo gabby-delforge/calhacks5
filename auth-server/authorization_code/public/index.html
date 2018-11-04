@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <title>Example of the Authorization Code flow with Spotify</title>
+    <title>Spotify Song Analyzer</title>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <style type="text/css">
       #login, #loggedin {
@@ -17,18 +17,29 @@
   </head>
 
   <body>
-    <div class="container">
+    <div class="jumbotron">
+      <div class="alert alert-info" role="alert">
+        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+        <span class="sr-only">Error:</span>
+        Please Log In
+      </div>
+      <div class="page-header">
+      <h1>Cal Hacks 5.0 Project</h1>
+    </div>
+
       <div id="login">
-        <h1>This is an example of the Authorization Code flow</h1>
-        <a href="/login" class="btn btn-primary">Log in with Spotify</a>
+        <a href="/login" class="btn btn-default">Log in with Spotify</a>
       </div>
       <div id="loggedin">
         <div id="user-profile">
         </div>
         <div id="oauth">
         </div>
-        <button class="btn btn-default" id="obtain-new-token">Obtain new token using the refresh token</button>
+        <center>
+          <button class="btn btn-default" id="obtain-new-token">Obtain new token using the refresh token</button>
+        </center>
       </div>
+      <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
     </div>
 
     <script id="user-profile-template" type="text/x-handlebars-template">
@@ -139,4 +150,3 @@
     </script>
   </body>
 </html>
-

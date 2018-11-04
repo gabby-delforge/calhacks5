@@ -21,6 +21,7 @@ class App extends Component {
   this.state = {
     width : 0,
     height : 0,
+    isPlaying: false,
     loggedIn: token ? true : false,
     nowPlaying: { name: '', albumArt: '', songId: ''},
     attributes: {energy: '', loudness: '', majmin: '', tempo : '', happiness : ''}
@@ -90,8 +91,16 @@ class App extends Component {
 
   pauseSongo(){
     spotifyApi.pause()
+    this.setState({
+      isPlaying: false
+    })
   }
-
+  playSongo(){
+    spotifyApi.play()
+    this.setState({
+      isPlaying: true
+    }, console.log(this.state))
+  }
   prevSongo(){
     spotifyApi.skipToPrevious()
     setTimeout(() => this.getNowPlaying(), 1000)
@@ -113,11 +122,19 @@ class App extends Component {
         Previous Song
       </Button>
     }
-    { this.state.loggedIn &&
+
+    { this.state.loggedIn && this.state.isPlaying &&
       <Button outline color="primary" onClick={() => {this.pauseSongo(); this.getNowPlaying();}}>
         ❚❚
       </Button>
-    }{ this.state.loggedIn &&
+    }
+    { this.state.loggedIn && !this.state.isPlaying &&
+      <Button outline color="primary" onClick={() => {this.playSongo(); this.getNowPlaying();}}>
+        ►
+      </Button>
+    }
+
+    { this.state.loggedIn &&
       <Button outline color="primary" onClick={() => {this.nextSongo(); this.getNowPlaying();}}>
         Next Song
       </Button>
