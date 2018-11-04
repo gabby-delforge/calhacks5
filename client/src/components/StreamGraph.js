@@ -126,7 +126,7 @@ const s = {
   },
   minor: {
     happy: [86, 60, 50],
-    sad: [233, 50, 50]
+    sad: [262, 46, 34]
   }
 }
 
@@ -198,6 +198,19 @@ class Streamgraph extends React.Component {
       },
     } = this.props;
     if (width < 10) return null;
+
+    if (this.props.nextSong) {
+      this.setState({
+        colors: generateColors(initColors(
+          this.props.majorMinor ?
+         (this.props.happy ? s.major.happy : s.major.sad) 
+         :
+         (this.props.happy ? s.minor.happy : s.minor.sad))) 
+      
+      });
+      this.props.setNextSong();
+
+    }
 
     const layers = transpose(
       keys.map(d => bumps(samplesPerLayer, bumpsPerLayer)),

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import SpotifyWebApi from 'spotify-web-api-js';
-import { Jumbotron, Button } from 'reactstrap';
+import { Jumbotron, Button, Media, Col, Container, Row } from 'reactstrap';
 import Streamgraph from './components/StreamGraph.js'
 
 const spotifyApi = new SpotifyWebApi({clientId : 'cc4b59d921b646e2a2a55fe4c409e8ab', clientSecret : '0568ba6224d846acaa1969dd646f25f1'});
@@ -14,6 +14,7 @@ class App extends Component {
   const token = params.access_token;
   this.nextSongo = this.nextSongo.bind(this);
   this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
+  this.setNextSongFalse = this.setNextSongFalse.bind(this);
 
   if (token) {
     spotifyApi.setAccessToken(token);
@@ -22,12 +23,16 @@ class App extends Component {
     width : 0,
     height : 0,
     isPlaying: false,
+    nextSong: false,
     loggedIn: token ? true : false,
     nowPlaying: { name: '', albumArt: '', songId: ''},
     attributes: {energy: '', loudness: '', majmin: '', tempo : '', happiness : ''}
   }
 }
 
+  setNextSongFalse() {
+    this.setState({nextSong: false});
+  }
   getHashParams() {
     var hashParams = {};
     var e, r = /([^&;=]+)=?([^&;]*)/g,
@@ -86,6 +91,7 @@ class App extends Component {
 
   nextSongo(){
     spotifyApi.skipToNext()
+    this.setState({nextSong: true});
     setTimeout(() => this.getNowPlaying(), 1000)
   }
 
@@ -139,16 +145,18 @@ class App extends Component {
         Next Song
       </Button>
     }</div>
-
-
-
+    
     <hr className="my-2" />
+
     {this.state.loggedIn && <Streamgraph
-      width = {this.state.width * .7}
+      width = {this.state.width * 0.9}
       height = {this.state.height * .8}
       majorMinor = {!!this.state.attributes.majmin}
       happy = {this.state.attributes.happiness > 0.5 ? 1 : 0}
+      nextSong = {this.state.nextSong}
+      setNextSong = {this.setNextSongFalse}
     />}
+
     <br/>
     <p>
 
