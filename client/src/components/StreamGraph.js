@@ -8,6 +8,7 @@ import { scaleTime, scaleLinear, scaleOrdinal } from '@vx/scale';
 import { cityTemperature } from '@vx/mock-data';
 import { timeParse } from 'd3-time-format';
 import { transpose } from 'd3-array';
+import {withScreenSize} from '@vx/responsive'
 
 // utils
 const max = (data, accessor) => Math.max(...data.map(accessor));
@@ -45,8 +46,8 @@ function bump(a, n) {
 class Streamgraph extends React.Component {
   render() {
     const {
-      width = 1000,
-      height = 200,
+      width,
+      height,
       events = false,
       margin = {
         top: 40,

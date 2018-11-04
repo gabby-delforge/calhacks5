@@ -3,7 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import SpotifyWebApi from 'spotify-web-api-js';
 import { Jumbotron, Button } from 'reactstrap';
-// import * as d3 from "d3";
+import Streamgraph from './components/StreamGraph.js'
 
 const spotifyApi = new SpotifyWebApi({clientId : 'cc4b59d921b646e2a2a55fe4c409e8ab', clientSecret : '0568ba6224d846acaa1969dd646f25f1'});
 
@@ -13,19 +13,19 @@ class App extends Component {
   const params = this.getHashParams();
   const token = params.access_token;
   this.nextSongo = this.nextSongo.bind(this);
-  this.getNowPlaying = this.getNowPlaying.bind(this);
-  // this.maybe = this.maybe.bind(this);
+  this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
+
   console.log(params)
 
   if (token) {
     spotifyApi.setAccessToken(token);
   }
   this.state = {
+    width : 0,
+    height : 0,
     loggedIn: token ? true : false,
-    nowPlaying: { name: '', albumArt: '', songId: ''},
-    attributes: {energy: '', loudness: '', majmin: '', tempo : '', happiness : ''}
+    nowPlaying: { name: '', albumArt: '' }
   }
- 
 }
 
   getHashParams() {
@@ -40,39 +40,27 @@ class App extends Component {
     return hashParams;
   }
 
-  getNowPlaying(){
-    spotifyApi.getMyCurrentPlaybackState()
-      .then((response) => {
-        this.setState({
-          nowPlaying: {
-              name: response.item.name,
-              albumArt: response.item.album.images[0].url,
-              songId : response.item.id
-            }
-        }, this.getAudioFeatures(this.state.nowPlaying.songId));
-      })
+  async getNowPlaying(){
+    const response = await spotifyApi.getMyCurrentPlaybackState();
+    this.setState({
+      nowPlaying: {
+        name: response.item.name,
+        albumArt: response.item.album.images[0].url
+        }
+      });
+  }
+  componentDidMount() {
+    this.updateWindowDimensions();
+    window.addEventListener('resize', this.updateWindowDimensions);
   }
 
-  getAudioFeatures(song) {
-    spotifyApi.getAudioFeaturesForTrack(song)
-      .then((response) => {
-        this.setState({
-          attributes: {
-              energy: response.energy,
-              loudness: response.loudness,
-              majmin: response.mode,
-              tempo: response.tempo,
-              happiness: response.valence
-          }
-        });
-      })
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateWindowDimensions);
   }
 
-  // maybe() {
-  //   this.getNowPlaying()
-  //     .then(() => this.getAudioFeatures(this.state.nowPlaying.songId));
-  // }
-
+  updateWindowDimensions() {
+    this.setState({ width: window.innerWidth, height: window.innerHeight });
+  }
   printToken(){
     console.log(this.token)
   }
@@ -98,8 +86,6 @@ class App extends Component {
       ));
   }
 
-  
-
   render() {
     this.getNowPlaying()
     return (
@@ -112,6 +98,11 @@ class App extends Component {
     </h1>
     <p className="lead">Listen to music with your friends.</p>
     <hr className="my-2" />
+    <Streamgraph
+      width = {this.state.width * .7}
+      height = {this.state.height * .8}
+    />
+    <br/>
     <p>      <div>
             <img src={this.state.nowPlaying.albumArt} style={{ height: 150 }}/>
           </div>
@@ -135,8 +126,8 @@ class App extends Component {
         Next Song
       </Button>
     }</div>
-   
-    { this.state.loggedIn &&
+
+    { !this.state.loggedIn &&
       <Button outline color="primary" onClick={() => this.getNowPlaying()}>
         Now Playing
       </Button>
