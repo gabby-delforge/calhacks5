@@ -116,6 +116,8 @@ class App extends Component {
     <Streamgraph
       width = {this.state.width * .7}
       height = {this.state.height * .8}
+      majorMinor = {!!this.state.attributes.majmin}
+      happy = {this.state.attributes.happiness > 0.5 ? 1 : 0}
     />
     <br/>
     <p>      <div>
