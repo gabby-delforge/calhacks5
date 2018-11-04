@@ -33,6 +33,7 @@ function bumps(n, m) {
   return a;
 }
 
+
 function bump(a, n) {
   var x = 1 / (0.1 + Math.random()),
     y = 2 * Math.random() - 0.5,
