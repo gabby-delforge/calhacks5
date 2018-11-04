@@ -107,22 +107,22 @@ class App extends Component {
     {this.state.loggedIn && <h1> WELCOME! </h1>}
 
     </h1>
-    <p className="lead">Listen to music with your friends.</p>
+    <p className="lead">See what you hear.</p>
     <hr className="my-2" />
-    <Streamgraph
+    {this.state.loggedIn && <Streamgraph
       width = {this.state.width * .7}
       height = {this.state.height * .8}
       majorMinor = {!!this.state.attributes.majmin}
       happy = {this.state.attributes.happiness > 0.5 ? 1 : 0}
-    />
+    />}
     <br/>
     <p>      <div>
             <img src={this.state.nowPlaying.albumArt} style={{ height: 150 }}/>
           </div>
 
-          <div>
+          {this.state.loggedIn &&<div>
             Now Playing: { this.state.nowPlaying.name }
-          </div>
+          </div>}
           </p>
     <p className="lead">
     <div> { this.state.loggedIn &&
@@ -140,7 +140,7 @@ class App extends Component {
       </Button>
     }</div>
 
-    { !this.state.loggedIn &&
+    { this.state.loggedIn &&
       <Button outline color="primary" onClick={() => this.getNowPlaying()}>
         Now Playing
       </Button>
