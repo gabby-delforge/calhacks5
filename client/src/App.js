@@ -104,27 +104,10 @@ class App extends Component {
       <Jumbotron>
     <h1 >
     {!this.state.loggedIn && <a href='http://localhost:8888' > Login to Spotify </a>}
-    {this.state.loggedIn && <h1> WELCOME! </h1>}
+    {this.state.loggedIn && <h1> MoodBox </h1>}
 
     </h1>
     <p className="lead">See what you hear.</p>
-    <hr className="my-2" />
-    {this.state.loggedIn && <Streamgraph
-      width = {this.state.width * .7}
-      height = {this.state.height * .8}
-      majorMinor = {!!this.state.attributes.majmin}
-      happy = {this.state.attributes.happiness > 0.5 ? 1 : 0}
-    />}
-    <br/>
-    <p>      <div>
-            <img src={this.state.nowPlaying.albumArt} style={{ height: 150 }}/>
-          </div>
-
-          {this.state.loggedIn &&<div>
-            Now Playing: { this.state.nowPlaying.name }
-          </div>}
-          </p>
-    <p className="lead">
     <div> { this.state.loggedIn &&
       <Button outline color="primary" onClick={() => {this.nextSongo(); this.getNowPlaying();}}>
         Previous Song
@@ -140,11 +123,28 @@ class App extends Component {
       </Button>
     }</div>
 
-    { this.state.loggedIn &&
-      <Button outline color="primary" onClick={() => this.getNowPlaying()}>
-        Now Playing
-      </Button>
-    }
+
+
+    <hr className="my-2" />
+    {this.state.loggedIn && <Streamgraph
+      width = {this.state.width * .7}
+      height = {this.state.height * .8}
+      majorMinor = {!!this.state.attributes.majmin}
+      happy = {this.state.attributes.happiness > 0.5 ? 1 : 0}
+    />}
+    <br/>
+    <p>
+
+          {this.state.loggedIn && this.state.nowPlaying.name && <div>
+            Now Playing: { this.state.nowPlaying.name }
+          </div>}
+          { this.state.loggedIn &&
+            <Button outline color="primary" onClick={() => this.getNowPlaying()}>
+              Now Playing
+            </Button>
+          }
+          </p>
+    <p className="lead">
 
   </p>
   </Jumbotron>
