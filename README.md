@@ -1,4 +1,4 @@
-# when2eat: when2meet, but prettier and better
+# what2eat: when2meet, but prettier and better
 
 ![what2eat](https://i.imgur.com/Ndy25zG.png)
 [devpost](https://devpost.com/software/what2eat)
