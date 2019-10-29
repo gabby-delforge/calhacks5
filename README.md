@@ -1,34 +1,23 @@
-# Cal Hacks 5.0 Project: MoodBox
+# when2eat: when2meet, but prettier and better
 
-![MoodBox](https://he-s3.s3.amazonaws.com/media/sprint/cal-hacks-50/team/477028/ae415cfmoodbox1.png)
-We created a sentiment analyzer using the spotify api.  It scrapes metadata about a given song and then visualizes the song using d3.
-[See the video demo here.](https://www.youtube.com/watch?v=663GIgxFDIc&feature=youtu.be)
-## Getting Started
+![what2eat](https://i.imgur.com/Ndy25zG.png)
+[devpost](https://devpost.com/software/what2eat)
 
-To run this project clone the repo and run npm install in the client folder.
-
-## Deployment
-To run set up the node server and start the react script.
-
-
-```
-node authorization_code/app.js  
-npm start
-```
 
 ## Built With
 
-* [React](https://reactjs.org/) - The web framework used
-* [Node](https://nodejs.org) - The back-end for our project
-* [Spotify Web API](https://developer.spotify.com/documentation/web-api/) - Used to get meta-data about songs.
+* [React](https://reactjs.org/)
+* [Flask](https://palletsprojects.com/p/flask/)
+* [Yelp API](https://www.yelp.com/developers/documentation/v3/)
+* [CockroackDB](https://www.cockroachlabs.com/product/)
 
 
 ## Authors
 
-* **Gabby Delforge** 
-* **Ian Galbraith**  
-* **Andrew Kurniawan** 
-* **Dustyn Pressman-Zeind** 
+* **Gabby Delforge** - Frontend
+* **Ian Galbraith** - Frontend 
+* **Andrew Kurniawan** - Backend
+* **Joseph Palakapilly** - Backend
 
 ## License
 
@@ -36,5 +25,5 @@ This project is licensed under the MIT License
 
 ## Acknowledgments
 
-* Thanks to JMPerez for his Spotify Web-API  
-* Thanks to CalHacks for a fun Hackathon!
+* Thanks to CockroachDB for the support
+* Thanks to CalHacks for 4 years of failures, successes, and most importantly, learning!
